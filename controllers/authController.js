@@ -21,6 +21,9 @@ exports.loginUser = (req, res, next) => {
                     if (!match) {
                         return res.status(401).send('Invalid email or password');
                     }
+                    if (!req.session) {
+                        req.session = {};
+                    }
                     req.session.user = user;
                     res.redirect('/');
                 })
