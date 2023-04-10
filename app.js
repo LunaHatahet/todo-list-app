@@ -5,6 +5,8 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
 const sequelize = require('./util/database');
+const User = require('./models/user');
+const Todo = require('./models/todo');
 
 const app = express();
 
@@ -15,11 +17,14 @@ app.set('view engine', 'ejs');
 const authRoutes = require('./routes/authRoutes');
 const todosRoutes = require('./routes/todosRoutes');
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(authRoutes);
 app.use(todosRoutes);
+
+User.hasMany(Todo, { foreignKey: 'userId' });
+Todo.belongsTo(User, { foreignKey: 'userId', onDelete: 'CASCADE' });
 
 sequelize
     .sync()

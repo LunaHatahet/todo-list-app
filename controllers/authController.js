@@ -72,6 +72,32 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.resetPasswordSubmit = (req, res, next) => {
+    const email = req.body.email;
+    const password = req.body.password;
+    User.findOne({ where: { email: email } })
+        .then(user => {
+            if (user) {
+                bcrypt.hash(password, 12, (err, hashedPassword) => {
+                    user.update({
+                        password: hashedPassword
+                    })
+                        .then(() => {
+                            console.log('Your password has been reset!');
+                            res.redirect('/login');
+                        })
+                        .catch(err => {
+                            console.log('Error updating password.');
+                            res.redirect('/reset-password');
+                        });
+                });
+            } else {
+                res.redirect('/reset-password');
+            }
+        })
+        .catch(() => {
+            console.log('No account with that email address exists.');
+            return res.redirect('/reset-password');
+        });
     // const email = req.body.email;
     // User.findOne({ where: { email: email } })
     //     .then(user => {

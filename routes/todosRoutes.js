@@ -33,7 +33,7 @@ router.get('/', (req, res, next) => {
         .catch(error => console.log(error));
 });
 
-router.get('/todos/:id', (req, res, next) => {
+router.get('/:id', (req, res, next) => {
     Todo.findByPk(req.params.id)
         .then(list => {
             res.render('todos', { list: list });
@@ -45,7 +45,8 @@ router.post('/', upload.single('attachment'), (req, res, next) => {
     const name = req.body.name;
     const status = req.body.status;
     const items = req.body.items;
-    const attachment = req.file ? req.file.path : null;
+    // const attachment = req.file ? req.file.path : null;
+    const attachment = req.file;
 
     Todo.create({
         name: name,
@@ -59,34 +60,58 @@ router.post('/', upload.single('attachment'), (req, res, next) => {
         .catch(error => console.log(error));
 });
 
-router.post('/todos/:id/edit', upload.single('attachment'), (req, res, next) => {
-    const name = req.body.name;
-    const status = req.body.status;
-    const items = req.body.items;
-    const attachment = req.file ? req.file.path : null;
-
-    Todo.findByPk(req.params.id)
-        .then(list => {
-            list.name = name;
-            list.status = status;
-            list.items = items;
-            list.attachment = attachment;
-            return list.save();
-        })
-        .then(() => {
-            res.redirect('/todos');
+router.get('/edit/:id', upload.single('attachment'), (req, res, next) => {
+    Todo.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+        .then(todo => {
+            res.render('todo-edit', { todo });
         })
         .catch(error => console.log(error));
 });
 
-router.post('/todos/:id/delete', (req, res, next) => {
+router.post('/edit/:id', (req, res, next) => {
+    const name = req.body.name;
+    const status = req.body.status;
+    const items = req.body.items;
+    const attachment = req.file;
+    
+    // Todo.set({
+    //     name: name,
+    //     status: status,
+    //     items: items,
+    //     attachment: attachment
+    // }, {
+    //     where: {
+    //         id: req.params.id,
+    //     }
+    // })
     
     Todo.findByPk(req.params.id)
-        .then(list => {
-            return list.destroy();
+    .then(todo => {
+        todo.name = name;
+        todo.status = status;
+        todo.items = items;
+        todo.attachment = attachment.path;
+        return Todo.save().then(result => {
+            console.log('List has been updated!');
+            res.redirect('/');
+        });
+    })
+    .catch(error => console.log(error));
+});
+
+router.post('/delete/:id', (req, res, next) => {  
+    Todo.destroy
+        ({
+            where: {
+                id: req.params.id
+            }
         })
         .then(() => {
-            res.redirect('/todos');
+            res.redirect('/');
         })
         .catch(error => console.log(error));
 });

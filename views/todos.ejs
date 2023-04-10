@@ -9,46 +9,63 @@
 </head>
 
 <body>
-    <h1>Todo Lists</h1>
+    <h1>To-Do Lists</h1>
     <h2>Create a New List</h2>
-    <form action="/" method="POST" enctype="multipart/form-data">
+    <form action="/" method="POST">
         <label>List Name:</label>
         <input type="text" name="name" required><br><br>
         <label>Status:</label>
-        <select name="status">
+        <select name="status" required>
             <option value="active">Active</option>
             <option value="complete">Complete</option>
         </select><br><br>
         <label>Items:</label>
-        <textarea name="items" rows="5" cols="40"></textarea><br><br>
+        <textarea name="items" rows="5" cols="40" required></textarea><br><br>
         <label>Attach a File:</label>
         <input type="file" name="attachment"><br><br>
-        <input type="submit" value="Create List">
+        <button type="submit">Create List</button>
     </form>
     
-    <% if (lists.length> 0) { %>
+    <% if (lists.length > 0) { %>
         <h2>Edit or Delete Existing Lists</h2>
-        <ul>
-            <% lists.forEach(list=> { %>
-                <li>
-                    <a href="/todos/<%= list.id %>">
-                        <%= list.name %>
-                    </a>
-                    <form action="/todos/<%= list.id %>/delete" method="POST">
-                        <button type="submit">Delete</button>
+        <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Items</th>
+                <th>Attachment</th>
+                <th>Created At</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% lists.forEach(function(list) { %>
+                <tr>
+                  <td><%= list.name %></td>
+                  <td><%= list.status %></td>
+                  <td><%= list.items %></td>
+                  <td><%= list.attachment %></td>
+                  <td><%= list.createdAt.toDateString() %></td>
+                  <td>
+                    <a href="/edit/<%= list.id %>">Edit</a>
+                    <form method="POST" action="/delete/<%= list.id %>">
+                      <button type="submit">Delete</button>
                     </form>
-                </li>
-            <% }) %>
-        </ul>
+                  </td>
+                </tr>
+              <% }); %>
+            </tbody>
+          </table>
     <% } else { %>
-            <p>No lists found.</p>
+            <p>No lists yet.</p>
     <% } %>
 
     <div class="pagination">
-        <% if (page> 1) { %>
+        <% if (page > 1) { %>
             <a href="?pageSize=<%= pageSize %>&page=<%= page - 1 %>">&laquo; Prev</a>
         <% } %>
-        <% for (let i=1; i <=pageCount; i++) { %>
+        <% for (let i=1; i <= pageCount; i++) { %>
             <% if (i===parseInt(page)) { %>
                 <a href="?pageSize=<%= pageSize %>&page=<%= i %>" class="active">
                     <%= i %>
@@ -65,7 +82,7 @@
         <% } %>
     </div>
 
-    <form method="GET" action="/todos">
+    <form method="GET" action="/">
         <label for="pageSize">Lists per page:</label>
         <select id="pageSize" name="pageSize" onchange="this.form.submit()">
             <option value="5" <% if (pageSize==5) { %>selected<% } %>>5</option>
