@@ -2,21 +2,24 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 
 const sequelize = require('./util/database');
 
 const app = express();
 
+app.use(morgan('combined'));
+
 app.set('view engine', 'ejs');
 
-const mainRoutes = require('./routes/mainRoutes');
 const authRoutes = require('./routes/authRoutes');
+const todosRoutes = require('./routes/todosRoutes');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(mainRoutes);
 app.use(authRoutes);
+app.use(todosRoutes);
 
 sequelize
     .sync()

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo Lists</title>
+</head>
+
+<body>
+    <h1>Todo Lists</h1>
+    <h2>Create a New List</h2>
+    <form action="/" method="POST" enctype="multipart/form-data">
+        <label>List Name:</label>
+        <input type="text" name="name" required><br><br>
+        <label>Status:</label>
+        <select name="status">
+            <option value="active">Active</option>
+            <option value="complete">Complete</option>
+        </select><br><br>
+        <label>Items:</label>
+        <textarea name="items" rows="5" cols="40"></textarea><br><br>
+        <label>Attach a File:</label>
+        <input type="file" name="attachment"><br><br>
+        <input type="submit" value="Create List">
+    </form>
+    
+    <% if (lists.length> 0) { %>
+        <h2>Edit or Delete Existing Lists</h2>
+        <ul>
+            <% lists.forEach(list=> { %>
+                <li>
+                    <a href="/todos/<%= list.id %>">
+                        <%= list.name %>
+                    </a>
+                    <form action="/todos/<%= list.id %>/delete" method="POST">
+                        <button type="submit">Delete</button>
+                    </form>
+                </li>
+            <% }) %>
+        </ul>
+    <% } else { %>
+            <p>No lists found.</p>
+    <% } %>
+
+    <div class="pagination">
+        <% if (page> 1) { %>
+            <a href="?pageSize=<%= pageSize %>&page=<%= page - 1 %>">&laquo; Prev</a>
+        <% } %>
+        <% for (let i=1; i <=pageCount; i++) { %>
+            <% if (i===parseInt(page)) { %>
+                <a href="?pageSize=<%= pageSize %>&page=<%= i %>" class="active">
+                    <%= i %>
+                </a>
+            <% } else { %>
+                <a href="?pageSize=<%= pageSize %>&page=<%= i %>">
+                    <%= i %>
+                </a>
+            <% } %>
+        <% } %>
+        <% if (page < pageCount) { %>
+            <a href="?pageSize=<%= pageSize %>&page=<%= page + 1 %>">Next
+                &raquo;</a>
+        <% } %>
+    </div>
+
+    <form method="GET" action="/todos">
+        <label for="pageSize">Lists per page:</label>
+        <select id="pageSize" name="pageSize" onchange="this.form.submit()">
+            <option value="5" <% if (pageSize==5) { %>selected<% } %>>5</option>
+            <option value="10" <% if (pageSize==10) { %>selected<% } %>>10</option>
+            <option value="20" <% if (pageSize==20) { %>selected<% } %>>20</option>
+        </select>
+    </form>
+</body>
+
+</html>
