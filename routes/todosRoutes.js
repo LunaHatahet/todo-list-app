@@ -94,8 +94,8 @@ router.post('/edit/:id', (req, res, next) => {
         todo.name = name;
         todo.status = status;
         todo.items = items;
-        todo.attachment = attachment.path;
-        return Todo.save().then(result => {
+        todo.attachment = attachment;
+        return todo.save().then(result => {
             console.log('List has been updated!');
             res.redirect('/');
         });

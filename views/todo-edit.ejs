@@ -16,13 +16,13 @@
       </input><br><br>
       <label>Status:</label>
       <select name="status" value="<%= todo.status %>" required>
-        <option value="active">Active</option>
-        <option value="complete">Complete</option>
+        <option value="active" <% if (todo.status === 'active') { %>selected<% } %>>Active</option>
+        <option value="complete" <% if (todo.status === 'complete') { %>selected<% } %>Complete</option>
       </select><br><br>
       <label>Items:</label>
       <textarea name="items" rows="5" cols="40" value="<%= todo.items %>" required>
       </textarea><br><br>
-      <label>File:</label>
+      <label>Attachment:</label>
       <input type="file" name="attachment" value="<%= todo.attachment %>">
     </input><br><br>
       <button type="submit">Update To-Do List</button>
