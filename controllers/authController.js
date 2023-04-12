@@ -11,8 +11,7 @@ exports.login = (req, res, next) => {
 };
 
 exports.loginUser = (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
 
     User.findOne({ where: { email: email } })
         .then(user => {
@@ -48,9 +47,7 @@ exports.signup = (req, res, next) => {
 };
 
 exports.signupUser = (req, res, next) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const password = req.body.password;
+    const { name, email, password } = req.body;
 
     bcrypt
         .hash(password, 12)
@@ -72,8 +69,8 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.resetPasswordSubmit = (req, res, next) => {
-    const email = req.body.email;
-    const password = req.body.password;
+    const { email, password } = req.body;
+    
     User.findOne({ where: { email: email } })
         .then(user => {
             if (user) {
