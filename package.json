@@ -27,7 +27,8 @@
     "nodemailer": "^6.9.1",
     "nodemailer-sendgrid-transport": "^0.2.0",
     "path": "^0.12.7",
-    "sequelize": "^6.30.0"
+    "sequelize": "^6.30.0",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^2.0.22"

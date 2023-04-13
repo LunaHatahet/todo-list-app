@@ -4,10 +4,9 @@ const sequelize = require('../util/database');
 
 const Todo = sequelize.define('todo', {
     id: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         primaryKey: true,
-        allowNull: false,
-        autoIncrement: true
+        allowNull: false
     },
     name: {
         type: Sequelize.STRING,

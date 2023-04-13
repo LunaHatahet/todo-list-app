@@ -1,4 +1,5 @@
 const Todo = require('../models/todo');
+const { v4: uuidv4 } = require('uuid');
 
 exports.pagination = (req, res, next) => {
     const pageSize = req.query.pageSize || 5;
@@ -23,9 +24,10 @@ exports.pagination = (req, res, next) => {
 exports.createList = (req, res, next) => {
     const { name, status, items, attachment } = req.body;
     const userId = req.user.id;
-    // const attachment = req.file;
+    const id = uuidv4();
     
     Todo.create({
+        id: id,
         name: name,
         status: status,
         items: items,
@@ -39,7 +41,7 @@ exports.createList = (req, res, next) => {
 };
 
 exports.editList = (req, res, next) => {
-    Todo.findOne({ where: { id: req.user.id } })
+    Todo.findOne({ where: { id: req.params.id } })
         .then(todo => {
             res.render('todo-edit', { todo });
         })
@@ -61,7 +63,7 @@ exports.updateList = (req, res, next) => {
             //     }
     // })
     
-    Todo.findByPk(req.user.id)
+    Todo.findByPk(req.params.id)
         .then(todo => {
             todo.name = name;
             todo.status = status;
@@ -84,7 +86,7 @@ exports.updateList = (req, res, next) => {
 // };
 
 exports.deleteList = (req, res, next) => {  
-    Todo.destroy({ where: { id: req.user.id } })
+    Todo.destroy({ where: { id: req.params.id } })
     .then(() => {
         res.redirect('/');
     })

@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
+const { v4: uuidv4 } = require('uuid');
 
 const saltRounds = 10;
 const JWT_SECRET = 'd1b41c94f57ce66f9020b70f6bad485d3dcd4a73ffa7cd9643754535c7896ef7db2e2040772773d2efd00fde1eb4089b2a38a75e626d7d16042821c4b2a4a2bb';
@@ -46,11 +47,14 @@ exports.signup = (req, res, next) => {
 
 exports.signupUser = (req, res, next) => {
     const { name, email, password } = req.body;
+    const id = uuidv4();
+    console.log(id);
 
     bcrypt
         .hash(password, 12)
         .then(hashedPassword => {
             User.create({
+                id: id,
                 name: name,
                 email: email,
                 password: hashedPassword
