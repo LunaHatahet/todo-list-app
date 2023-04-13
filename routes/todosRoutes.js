@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const todoController = require('../controllers/todoController');
+const isAuth = require('../middleware/isauth');
 
 const multer = require('multer');
 
@@ -14,11 +15,11 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-router.get('/', todoController.pagination);
-router.post('/', upload.single('attachment'), todoController.createList);
-router.get('/edit/:id', upload.single('attachment'), todoController.editList);
-router.post('/edit/:id', todoController.updateList);
-// router.get('/:id', todoController.listDetails);
-router.post('/delete/:id', todoController.deleteList);
+router.get('/', isAuth, todoController.pagination);
+router.post('/', isAuth, upload.single('attachment'), todoController.createList);
+router.get('/edit/:id', isAuth, upload.single('attachment'), todoController.editList);
+router.post('/edit/:id', isAuth, todoController.updateList);
+// router.get('/:id', isAuth, todoController.listDetails);
+router.post('/delete/:id', isAuth, todoController.deleteList);
 
 module.exports = router;
