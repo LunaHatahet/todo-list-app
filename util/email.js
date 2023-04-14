@@ -2,6 +2,8 @@ const nodemailer = require('nodemailer');
 const sgTransport = require('nodemailer-sendgrid-transport');
 const crypto = require('crypto');
 
+const User = require('../models/user');
+
 const options = {
     auth: {
         api_key: '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'
@@ -21,6 +23,9 @@ const sendResetPasswordEmail = async (email) => {
     };
     try {
         await transporter.sendMail(message);
+        const user = await User.findOne({ where: { email: email } });
+        user.token = token;
+        await user.save();
         return token;
     } catch (error) {
         console.log(error);
