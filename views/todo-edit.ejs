@@ -10,7 +10,7 @@
 
 <body>
   <h1>Edit To-Do List</h1>
-  <form action="/edit/<%= todo.id %>" method="POST">
+  <form action="/edit/<%= todo.id %>" method="POST" enctype="multipart/form-data">
     <label>Name:</label>
     <input type="text" name="name" value="<%= todo.name %>" required><br><br>
     <label>Status:</label>

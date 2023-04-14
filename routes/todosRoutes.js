@@ -17,9 +17,8 @@ const upload = multer({ storage: storage });
 
 router.get('/', isAuth, todoController.pagination);
 router.post('/', isAuth, upload.single('attachment'), todoController.createList);
-router.get('/edit/:id', isAuth, upload.single('attachment'), todoController.editList);
-router.post('/edit/:id', isAuth, todoController.updateList);
-// router.get('/:id', isAuth, todoController.listDetails);
+router.get('/edit/:id', isAuth, todoController.editList);
+router.post('/edit/:id', isAuth, upload.single('attachment'), todoController.updateList);
 router.post('/delete/:id', isAuth, todoController.deleteList);
 
 module.exports = router;
