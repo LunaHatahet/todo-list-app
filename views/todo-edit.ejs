@@ -2,31 +2,28 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit To-Do List</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit To-Do List</title>
 </head>
 
 <body>
-    <h1>Edit To-Do List</h1>
-    <form action="/edit/<%= todo.id %>" method="POST">
-      <label>Name:</label>
-      <input type="text" name="name" value="<%= todo.name %>" required>
-      </input><br><br>
-      <label>Status:</label>
-      <select name="status" value="<%= todo.status %>" required>
-        <option value="active" <% if (todo.status === 'active') { %>selected<% } %>>Active</option>
-        <option value="complete" <% if (todo.status === 'complete') { %>selected<% } %>Complete</option>
-      </select><br><br>
-      <label>Items:</label>
-      <textarea name="items" rows="5" cols="40" value="<%= todo.items %>" required>
-      </textarea><br><br>
-      <label>Attachment:</label>
-      <input type="file" name="attachment" value="<%= todo.attachment %>">
-    </input><br><br>
-      <button type="submit">Update To-Do List</button>
-    </form>
+  <h1>Edit To-Do List</h1>
+  <form action="/edit/<%= todo.id %>" method="POST">
+    <label>Name:</label>
+    <input type="text" name="name" value="<%= todo.name %>" required><br><br>
+    <label>Status:</label>
+    <select name="status" required>
+      <option value="active" <% if (todo.status==='active' ) { %>selected<% } %>>Active</option>
+      <option value="complete" <% if (todo.status==='complete' ) { %>selected<% } %>>Complete</option>
+    </select><br><br>
+    <label>Items:</label>
+    <textarea name="items" rows="5" cols="40" required><%= todo.items %></textarea><br><br>
+    <label>Attachment:</label>
+    <input type="file" name="attachment"><br><br>
+    <button type="submit">Update To-Do List</button>
+  </form>
 </body>
 
 </html>
