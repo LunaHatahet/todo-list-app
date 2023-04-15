@@ -2,9 +2,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const User = require('../models/user');
+const Email = require('../util/email');
 const { v4: uuidv4 } = require('uuid');
 
-const saltRounds = 10;
 const JWT_SECRET = 'd1b41c94f57ce66f9020b70f6bad485d3dcd4a73ffa7cd9643754535c7896ef7db2e2040772773d2efd00fde1eb4089b2a38a75e626d7d16042821c4b2a4a2bb';
 
 exports.login = (req, res, next) => {
@@ -48,7 +48,6 @@ exports.signup = (req, res, next) => {
 exports.signupUser = (req, res, next) => {
     const { name, email, password } = req.body;
     const id = uuidv4();
-    console.log(id);
 
     bcrypt
         .hash(password, 12)
@@ -71,24 +70,12 @@ exports.resetPassword = (req, res, next) => {
 };
 
 exports.resetPasswordSubmit = (req, res, next) => {
-    const { email, password } = req.body;
+    const { email } = req.body;
     
     User.findOne({ where: { email: email } })
         .then(user => {
             if (user) {
-                bcrypt.hash(password, 12, (err, hashedPassword) => {
-                    user.update({
-                        password: hashedPassword
-                    })
-                        .then(() => {
-                            console.log('Your password has been reset!');
-                            res.redirect('/login');
-                        })
-                        .catch(err => {
-                            console.log('Error updating password.');
-                            res.redirect('/reset-password');
-                        });
-                });
+                Email.sendResetPasswordEmail(email);
             } else {
                 res.redirect('/reset-password');
             }
@@ -97,36 +84,38 @@ exports.resetPasswordSubmit = (req, res, next) => {
             console.log('No account with that email address exists.');
             return res.redirect('/reset-password');
         });
-    // const email = req.body.email;
-    // User.findOne({ where: { email: email } })
-    //     .then(user => {
-    //         if (!user) {
-    //             req.flash('error', 'No account with that email address exists.');
-    //             return res.redirect('/reset-password');
-    //         }
-    //         const token = crypto.randomBytes(20).toString('hex');
-    //         user.resetPasswordToken = token;
-    //         user.resetPasswordExpires = Date.now() + 3600000;
-    //         user
-    //             .save()
-    //             .then(() => {
-    //                 const transporter = nodemailer.createTransport({
-    //                     service: 'gmail',
-    //                 });
-    //                 const mailOptions = {
-    //                     to: email,
-    //                     from: 'admin@todo-list.com',
-    //                     subject: 'Reset your password',
-    //                     text: `You are receiving this because you (or someone else) have requested to reset your password.\n\nPlease click on the following link to complete the process:\n\nhttp://${req.headers.host}/reset-password/${token}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`
-    //                 };
-    //                 transporter.sendMail(mailOptions)
-    //                     .then(() => {
-    //                         req.flash('success', `An email has been sent to ${email}.`);
-    //                         res.redirect('/login');
-    //                     })
-    //                     .catch(err => console.log(err));
-    //             })
-    //             .catch(err => console.log(err));
-    //     })
-    //     .catch(err => console.log(err));
+};
+
+exports.updatePassword = (req, res, next) => {
+    const token = req.params.token;
+
+    User.findOne({ where: { token: token } })
+    .then(user => {
+        res.render('update-password', { user: user.toJSON() });
+    })
+    .catch(error => console.log(error));
+};
+
+exports.updatePasswordSubmit = (req, res, next) => {
+    const password = req.body.password;
+    const token = req.params.token;
+
+    User.findOne({ where: { token: token } })
+        .then(user => {
+            bcrypt.hash(password, 12, (err, hashedPassword) => {
+                user.update({
+                    password: hashedPassword,
+                    token: undefined
+                })
+                    .then(() => {
+                        console.log('Your password has been reset!');
+                        res.redirect('/login');
+                    })
+                    .catch(() => {
+                        console.log('Error updating password.');
+                        res.redirect('/reset-password');
+                    });
+            });
+        })
+        .catch(error => console.log(error));     
 };
