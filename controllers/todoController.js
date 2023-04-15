@@ -24,7 +24,8 @@ exports.pagination = (req, res, next) => {
 };
 
 exports.createList = (req, res, next) => {
-    const { name, status, items, attachment } = req.body;
+    const { name, status, items } = req.body;
+    const attachment = req.file ? req.file.filename : null;
     const userId = req.user.id;
     const id = uuidv4();
 
@@ -57,8 +58,10 @@ exports.editList = (req, res, next) => {
 };
 
 exports.updateList = (req, res, next) => {
-    const { name, status, items, attachment } = req.body;
-    // const attachment = req.file;
+    const name = req.body.name;
+    const status = req.body.status;
+    const items = req.body.items;
+    const attachment = req.file ? req.file.filename : null;;
 
     Todo.findByPk(req.params.id)
         .then(todo => {
@@ -73,14 +76,6 @@ exports.updateList = (req, res, next) => {
         })
         .catch(error => console.log(error));
 };
-    
-// exports.listDetails = (req, res, next) => {
-//     Todo.findByPk(req.params.id)
-//         .then(list => {
-//             res.render('todos', { list: list });
-//         })
-//         .catch(error => console.log(error));
-// };
 
 exports.deleteList = (req, res, next) => {  
     Todo.destroy({ where: { id: req.params.id } })
