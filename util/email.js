@@ -6,7 +6,7 @@ const User = require('../models/user');
 
 const options = {
     auth: {
-        api_key: ''
+        api_key: process.env.SENDGRID_API_KEY
     }
 };
 

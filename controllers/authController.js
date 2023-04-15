@@ -5,7 +5,7 @@ const User = require('../models/user');
 const Email = require('../util/email');
 const { v4: uuidv4 } = require('uuid');
 
-const JWT_SECRET = 'd1b41c94f57ce66f9020b70f6bad485d3dcd4a73ffa7cd9643754535c7896ef7db2e2040772773d2efd00fde1eb4089b2a38a75e626d7d16042821c4b2a4a2bb';
+const JWT_SECRET = process.env.JWT_SECRET;
 
 exports.login = (req, res, next) => {
     res.render('login');
