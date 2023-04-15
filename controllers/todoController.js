@@ -1,4 +1,6 @@
 const Todo = require('../models/todo');
+const User = require('../models/user');
+const Email = require('../util/email');
 const { v4: uuidv4 } = require('uuid');
 
 exports.pagination = (req, res, next) => {
@@ -25,17 +27,23 @@ exports.createList = (req, res, next) => {
     const { name, status, items, attachment } = req.body;
     const userId = req.user.id;
     const id = uuidv4();
-    
-    Todo.create({
-        id: id,
-        name: name,
-        status: status,
-        items: items,
-        attachment: attachment,
-        userId: userId
-    })
-        .then(() => {
-            res.redirect('/');
+
+    User.findOne({ where: { id: userId } })
+        .then (user => {
+            const userEmail = user.email;
+            Todo.create({
+                id: id,
+                name: name,
+                status: status,
+                items: items,
+                attachment: attachment,
+                userId: userId
+            })
+                .then(() => {
+                    Email.sendNewListCreationEmail(userEmail);
+                    res.redirect('/');
+                })
+                .catch(error => console.log(error));
         })
         .catch(error => console.log(error));
 };
@@ -43,7 +51,7 @@ exports.createList = (req, res, next) => {
 exports.editList = (req, res, next) => {
     Todo.findOne({ where: { id: req.params.id } })
         .then(todo => {
-            res.render('todo-edit', { todo });
+            res.render('todo-edit', { todo: todo.toJSON() });
         })
         .catch(error => console.log(error));
 };
@@ -51,18 +59,7 @@ exports.editList = (req, res, next) => {
 exports.updateList = (req, res, next) => {
     const { name, status, items, attachment } = req.body;
     // const attachment = req.file;
-    
-    // Todo.set({
-    //     name: name,
-    //     status: status,
-    //     items: items,
-    //     attachment: attachment
-    // }, {
-        //     where: {
-            //         id: req.params.id,
-            //     }
-    // })
-    
+
     Todo.findByPk(req.params.id)
         .then(todo => {
             todo.name = name;
