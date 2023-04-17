@@ -10,6 +10,8 @@
 
 <body>
     <h1>To-Do Lists</h1>
+    <table width="100%">
+      <tr><th width="40%">
     <h2>Create a New List</h2>
     <form action="/" method="POST" enctype="multipart/form-data">
         <label>List Name:</label>
@@ -25,7 +27,8 @@
         <input type="file" name="attachment"><br><br>
         <button type="submit">Create List</button>
     </form>
-    
+  </th>
+  <th width="60%">
     <% if (lists.length > 0) { %>
         <h2>Edit or Delete Existing Lists</h2>
         <table>
@@ -45,7 +48,7 @@
                   <td><%= list.name %></td>
                   <td><%= list.status %></td>
                   <td><%= list.items %></td>
-                  <td><a href="/uploads/<%= list.attachment %>" download><%= list.attachment %></a></td>
+                  <td><a href="/uploads/<%= list.attachment %>"><%= list.attachment %></a></td>
                   <td><%= list.createdAt.toDateString() %></td>
                   <td>
                     <a href="/edit/<%= list.id %>">Edit</a>
@@ -90,6 +93,8 @@
             <option value="20" <% if (pageSize==20) { %>selected<% } %>>20</option>
         </select>
     </form>
+  </th></tr>
+  </table>
     <p><a href="/login">Logout</a></p>
 </body>
 
