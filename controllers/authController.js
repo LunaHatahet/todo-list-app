@@ -105,7 +105,7 @@ exports.updatePasswordSubmit = (req, res, next) => {
             bcrypt.hash(password, 12, (err, hashedPassword) => {
                 user.update({
                     password: hashedPassword,
-                    token: undefined
+                    token: null
                 })
                     .then(() => {
                         console.log('Your password has been reset!');
