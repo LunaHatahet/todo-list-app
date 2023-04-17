@@ -17,7 +17,7 @@ const sendResetPasswordEmail = async (email) => {
     const resetPasswordUrl = `http://localhost:3000/reset-password/${token}`;
     const message = {
         to: email,
-        from: 'luna.hatahet@gmail.com',
+        from: process.env.SENDGRID_EMAIL,
         subject: 'Reset your password',
         html: `Please click this link to reset your password: <a href="${resetPasswordUrl}">${resetPasswordUrl}</a>`
     };
@@ -36,7 +36,7 @@ const sendResetPasswordEmail = async (email) => {
 const sendNewListCreationEmail = async (email) => {
     const message = {
         to: email,
-        from: 'luna.hatahet@gmail.com',
+        from: process.env.SENDGRID_EMAIL,
         subject: 'New List Created',
         text: 'You have successfully created a new list!'
     };
