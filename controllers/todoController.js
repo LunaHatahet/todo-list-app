@@ -10,8 +10,8 @@ exports.pagination = (req, res, next) => {
 
     Todo.findAndCountAll({
         where: { userId: req.user.id },
-        limit: pageSize,
-        offset: offset,
+        limit: parseInt(pageSize),
+        offset: parseInt(offset),
         order: [['createdAt', 'DESC']]
     })
         .then(result => {
@@ -75,9 +75,17 @@ exports.updateList = (req, res, next) => {
             });
         })
         .catch(error => console.log(error));
-};
-
-exports.deleteList = (req, res, next) => {  
+    };
+    
+    exports.viewAttachment = (req, res, next) => {
+        Todo.findOne({ where: { attachment: req.params.attachment } })
+            .then(todo => {
+                res.render('attachment', { todo: todo.toJSON() });
+            })
+            .catch(error => console.log(error));
+    };
+    
+    exports.deleteList = (req, res, next) => {  
     Todo.destroy({ where: { id: req.params.id } })
     .then(() => {
         res.redirect('/');
