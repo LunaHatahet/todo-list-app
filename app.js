@@ -16,6 +16,8 @@ app.use(cookieParser());
 
 app.use(morgan('combined'));
 
+app.use('/uploads', express.static('uploads'));
+
 app.set('view engine', 'ejs');
 
 const authRoutes = require('./routes/authRoutes');
